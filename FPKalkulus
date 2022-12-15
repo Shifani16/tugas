@@ -1,0 +1,241 @@
+@app.route("/testView_dari_project2", methods=['GET', 'POST'])
+def testView_dari_project2():
+    import numpy as np
+
+    def persamaan_beta (x,y):
+        hasilbeta = np.matmul(np.linalg.inv(np.matmul(np.transpose(x),x)),np.matmul(np.transpose(x),y))
+        return hasilbeta
+
+    def y_bar(x_uji, beta):
+        hasil_y_bar = np.matmul(x_uji, beta)
+        return hasil_y_bar
+
+
+    x = np.array ([
+        [6.5, 10, 8.5, 11, 3.5],
+        [6.5, 10, 5.5, 11, 2],
+        [5, 10, 5.5, 10, 3],
+        [6.5, 10, 5.5, 12, 3],
+        [5, 10, 5.5, 15.5, 4.5],
+        [5, 10, 5.5, 11, 3],
+        [6.5, 10, 5.5, 11, 3],
+    ])
+    y = np.array ([
+        [7, 4],
+        [1, 4],
+        [4, 4],
+        [2, 4],
+        [1, 4],
+        [10, 4],
+        [3, 4],
+    ])
+
+    #x_uji = [var1, var2, var3, var4, var5]
+    if request.method == 'POST': # dioperasikan dihalaman sendiri tanpa send ke route, misal .
+
+        var1_in = float(request.form['var1'])
+        var2_in = float(request.form['var2'])
+        var3_in = float(request.form['var3'])
+        var4_in = float(request.form['var4'])
+        var5_in = float(request.form['var5'])
+        beta = persamaan_beta(x,y)
+
+        #masukkan data uji (x_uji)
+        x_uji = np.array ([
+            [var1_in, var2_in, var3_in, var4_in, var5_in]
+            ])
+
+        hitung_y_bar = y_bar(x_uji, beta)
+
+        hitung_y_bar_round = hitung_y_bar.copy()
+
+        #agar angkanya bulat ke atas
+        hitung_y_bar_round = np.ceil(hitung_y_bar_round)
+
+        #yang nilainya <0, set = 0
+
+        template_view = '''
+            <script type="text/javascript" src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
+            <div class="row">
+                    <div class="col-md-6">
+                        <div class="white-box">
+                            <h3 class="box-title m-b-0">Prediksi Hasil Pengujian Aktivitas Harian Mahasiswa Sukses Untuk Prediksi Jenis Keminatan & Lama Waktu Studi Aktivitas Harian (x1, x2, x3, x4, x5) Jenis Keminatan (y1) & Lama Waktu Studi (y2)): </h3>
+                            <p class="text-muted m-b-30 font-13"> masukkan nilai parameter Anda </p>
+                            <form action="/testView_dari_project2" method="post" class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x1 = 03.00 - 07.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var1" {% if var1 is defined and var1 %} value="{{var1}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x2 = 07.00 - 11.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var2" {% if var2 is defined and var2 %} value="{{var2}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x3 = 12.00 - 16.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var3" {% if var3 is defined and var3 %} value="{{var3}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x4 = 17.00 - 21.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var4" {% if var4 is defined and var4 %} value="{{var4}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x5 = 22.00 - 02.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var5" {% if var5 is defined and var5 %} value="{{var5}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-b-0">
+                                    <div class="col-sm-offset-3 col-sm-9 text-right">
+                                        <button type="submit" class="btn btn-info waves-effect waves-light m-t-10">Hitung Hasil Prediksi</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="white-box row">
+                            <h3 class="box-title m-b-0">Estimasi hasil prediksinya adalah </h3>
+                            {% if c_save is defined and c_save %}
+                            <p class="text-muted m-b-30 font-13"> Jenis Keminatan (y1) = {{c_save[0][0]}} (Hasil Pembulatan = {{c_save_round[0][0]}} </p>
+                            <p class="text-muted m-b-30 font-13"> Lama Waktu Studi (y2) = {{c_save[0][1]}} (Hasil Pembulatan = {{c_save_round[0][1]}} </p>
+                            {% endif %}
+                            <div class="mt-8">
+                                {% if var1 is defined and var1 %}
+                                <p>x1: {{var1}}</p>
+                                <p>x2: {{var2}}</p>
+                                <p>x3: {{var3}}</p>
+                                <p>x4: {{var4}}</p>
+                                <p>x5: {{var5}}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="white-box mt-8 row">
+                    <div class="justify-around bg-white rounded-lg">
+                            <img class="col-md-3 col-xs-12" src="{{ url_for('static', filename = 'img/filkom.png') }}" alt="logo-filkom">
+                            <img class="col-md-3 col-xs-12" src="{{ url_for('static', filename = 'img/conan.jpg') }}" alt="kartun-conan">
+                    </div>
+                     </div>
+                    </div>
+                </div>
+        '''
+
+        return render_template_string(A_a+template_view+Z_z, var1 = var1_in, var2 = var2_in, var3 = var3_in, var4 = var4_in, var5 = var5_in, c_save = list(hitung_y_bar), c_save_round = list(hitung_y_bar_round))
+
+    else: # untuk yang 'GET' data awal untuk di send ke /testView_dari_project2
+
+        template_view = '''
+            <script type="text/javascript" src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
+            <div class="row">
+                    <div class="col-md-6">
+                        <div class="white-box">
+                            <h3 class="box-title m-b-0">Prediksi Hasil Pengujian Aktivitas Harian Mahasiswa Sukses Untuk Prediksi Jenis Keminatan & Lama Waktu Studi Aktivitas Harian (x1, x2, x3, x4, x5) Jenis Keminatan (y1) & Lama Waktu Studi (y2)): </h3>
+                            <p class="text-muted m-b-30 font-13"> masukkan nilai parameter Anda </p>
+                            <form action="/testView_dari_project2" method="post" class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x1 = 03.00 - 07.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var1" {% if var1 is defined and var1 %} value="{{var1}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x2 = 07.00 - 11.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var2" {% if var2 is defined and var2 %} value="{{var2}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x3 = 12.00 - 16.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var3" {% if var3 is defined and var3 %} value="{{var3}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x4 = 17.00 - 21.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var4" {% if var4 is defined and var4 %} value="{{var4}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputuname" class="col-sm-3 control-label">x5 = 22.00 - 02.00*</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <input type="text" name="var5" {% if var5 is defined and var5 %} value="{{var5}}" {% else %} value="" {% endif %} class="form-control" id="exampleInputuname" placeholder="Skor" required="required">
+                                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group m-b-0">
+                                    <div class="col-sm-offset-3 col-sm-9 text-right">
+                                        <button type="submit" class="btn btn-info waves-effect waves-light m-t-10">Hitung Hasil Prediksi</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="white-box row">
+                            <h3 class="box-title m-b-0">Estimasi hasil prediksinya adalah </h3>
+                            {% if c_save is defined and c_save %}
+                            <p class="text-muted m-b-30 font-13"> Jenis Keminatan (y1) = {{c_save[0][0]}} (Hasil Pembulatan = {{c_save_round[0][0]}} </p>
+                            <p class="text-muted m-b-30 font-13"> Lama Waktu Studi (y2) = {{c_save[0][1]}} (Hasil Pembulatan = {{c_save_round[0][1]}} </p>
+                            {% endif %}
+                            <div class="mt-8">
+                                {% if var1 is defined and var1 %}
+                                <p>x1: {{var1}}</p>
+                                <p>x2: {{var2}}</p>
+                                <p>x3: {{var3}}</p>
+                                <p>x4: {{var4}}</p>
+                                <p>x5: {{var5}}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="white-box mt-8 row">
+                    <div class="justify-around bg-white rounded-lg">
+                            <img class="col-md-3 col-xs-12" src="{{ url_for('static', filename = 'img/filkom.png') }}" alt="logo-filkom">
+                            <img class="col-md-3 col-xs-12" src="{{ url_for('static', filename = 'img/conan.jpg') }}" alt="kartun-conan">
+                    </div>
+                     </div>
+                    </div>
+                </div>
+        '''
+
+        return render_template_string(A_a+template_view+Z_z)
